@@ -1,0 +1,37 @@
+Ignoring n for now, let's just focus on the x chosen vertices. Sort the x vertices and connect adjacent vertices to form its own smaller polygon.
+By drawing out some cases or if you're familiar with triangulation (video that proves by induction: https://www.youtube.com/watch?v=2x4ioToqe_c),
+    you can form (x−2) triangles by drawing diagonals in a polygon with x vertices.
+
+If you don't know it, one possible construction that always work is fixing one vertex v and drawing diagonals to every other vertex not adjacent to v. 
+Now, let's consider the original n-sided polygon.
+In additional to the aforementioned construction, to close the x-sided polygon up: for every non-adjacent vertex in the chosen vertices based on the bigger n
+-sided polygon, draw a diagonal between them. Through this construction, we can always guarantee x−2 triangles.
+
+However, this doesn't account for all triangles, as some triangles can form sides with the bigger n-sided polygon.
+These triangles occur exactly when two adjacent vertex in x have exactly one vertex not in x between them but part of the bigger polygon.
+This is because one side is from the diagonals we drew, and the other two sides form from the n-sided polygon.
+
+Therefore, the answer is x−2 + (number of adjacent chosen vertices 2 apart).
+Note that the first chosen vertex is also adjacent to last chosen vertex in x.
+
+Complexity: O(nlog(n)) {Major chuck of operations are to check the skipped vertex case, which is does for each vextex, giving log(n) factor for each vertex.}  
+Also note (a%b) is the modulo operation. 
+
+from sys import stdin
+input=lambda :stdin.readline()[:-1]
+import math
+def solve():
+    n,x,y = map(int,(input().split()))    
+    a = sorted(list(map(int, input().split())))
+    b = set(a)
+    x = len(a)
+    ans = max(x-2,0)
+    for i in a:
+        if((i in b) and (((i+1)%n+1) in b) and ((i%n)+1 not in b)):
+            ans+=1
+    print(ans)
+
+    
+for _ in range(int(input())):
+    solve()
+
