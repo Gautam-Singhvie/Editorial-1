@@ -1,0 +1,28 @@
+In this question we have 2 operation:-
+1. Either reduce y by 1.
+2. Either reduce y by x*pow(10,p) {for any p}
+We notice operation 2 is more efficient in reducing y than x, so we will prioritize using operation 2 over 1.
+We also notice we can reduce y by an equivalent amount if either we do Operation 2 with p = (p+1) one time or do it with p = (p) 10 times, 
+	but we are minimizing number of operations if we using (p+1). So we will try maximizing p at every step.
+So we greedyly choose Operation 2 until we can't choose it anymore, then we resort to Operation 1.
+
+
+from math import floor,log10
+def solve():
+    x,y  = map(int,(input().split()))    
+    ans =0
+    while(y>0):
+        if(y<x):
+			# Operation 1
+            ans+=y
+            y-=y
+        else:
+			# Operation 2
+            t = floor(log10(y//x))
+            y-=x*pow(10,t)
+            ans+=1
+    print(ans)
+            
+for _ in range(int(input())):
+    solve()
+
