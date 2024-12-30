@@ -1,0 +1,13 @@
+The question states that we want k fields of equal productivity, while maximizing individual productivity.
+So we pick the k most productive fields and knock them down to the productivity of the kth field. 
+
+Complexity: O(nlog(n)) {Because of sorting}
+
+def solve():
+    n,k = map(int,(input().split()))    
+    a = sorted(list(map(int, input().split())))
+    print(a[n-k])
+
+    
+for _ in range(int(1)):
+    solve()
