@@ -1,0 +1,115 @@
+import math
+from math import inf,floor,ceil,comb,lcm,gcd,log2
+# Used to calculate their namesake.
+
+
+def Sieve(num):
+    # This is the Sieve of Eratosthenes!
+    # It can be used to find all primes up to a number(n) in O(n log(log(n))) complexity!
+    # Check out Time Complexity(TC) and Big-O Notation!
+    l2=[]
+    prime = [True for i in range(num+1)]
+    p = 2
+    while (p * p <= num):
+        if (prime[p] == True):
+            for i in range(p * p, num+1, p):
+                prime[i] = False
+        p += 1
+    for p in range(2, num+1):
+        if prime[p]:
+            l2.append(p)
+    return(l2)
+# s = Sieve(50)
+# print(s) => [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47] 
+
+
+# *Make sure to get familiar with lists, strings, sets and dicts
+#    and some common methods like splicing and list.sort()!*
+
+from collections import Counter, deque, defaultdict
+# These are some very useful library structures!
+    # Counter counts the number of occurences of a particular element in an iterable(sets,lists,etc)
+    # and returns a counter object(funtions like a dict)
+
+    # a= [1,1,2,2,2,3,3]
+    # print(Counter(a)) => Counter({1: 2,2: 3, 3: 2})
+
+
+    # Deques are double ended queues!
+    # They support indexings and appends and pops to the end as well as the beginning in O(1) complexity!
+    # *pop(index) on lists is O(n) if you are not poping the last element! Splicing is O(n) too!*
+
+    # a = [1,2,3,4,5]
+    # a = deque(a)
+    # a.popleft()
+    # a.appendleft(12)
+    # a.pop()
+    # a.append(17)
+    # print(a) => deque([12, 2, 3, 4, 17])
+
+
+    # Defaultdicts are dictionaries that initialize keys dynamically so we never run into a KeyError!
+
+    # a =defaultdict(int)[can use int, list, str, set, etc]
+    # print(a[1]) => 0 {default value}
+    # a[2] = 5
+    # print(a[2]) => 5
+    # a[2]+=1
+    # print(a) => defaultdict(<class 'int'>, {1: 0, 2: 6})
+
+
+
+
+def pfactor(n):
+    # Returns a defaultdict of prime factorization of n in O(root(n)*log(n)) complexity.
+    ans=defaultdict(int)
+    s = Sieve(ceil(n**0.5))
+    # print(s)
+    for i in s:
+        x = divmod(n,i)
+        # print("X==",x)
+        while(x[1]==0):
+            ans[i]+=1
+            n = x[0]
+            x = divmod(n,i)
+        if(n==1):
+            break
+    if(n!=1):
+        ans[n]+=1
+    return(ans)
+# print(pfactor(24)) => defaultdict(<class 'int'>, {2: 3, 3: 1})
+
+def ncr(n, r, p):
+    # Used to calculate (nCr)%p if p is a prime greater than r.
+    # Uses Fermat's little theorem (check it out!).
+    num = den = 1
+    for i in range(r):
+        num = (num * (n - i)) % p
+        den = (den * (i + 1)) % p
+    return (num * pow(den,p - 2, p)) % p
+
+
+
+from sys import stdin
+input=lambda :stdin.readline()[:-1]
+# Fast Input
+# One of the only drawbacks of Python is that it's a bit slower in taking input and printing outputs.  
+# The above lines speeds up the inputs massively! 
+# To not run into Output TLEs try keeping the number of times you are printing to a minimum.
+    # *also check out printing using dereferencing(*) and seperation(sep)*
+    # a = [1,2,3,4,5]
+    # print(*a,sep="* ") => 1* 2* 3* 4* 5 {default sep is " "}
+
+
+def solve():
+    n = int(input())
+    n,m = map(int,(input().split()))    
+    a = list(map(int, input().split())) #Takes a list of ints sepereated by spaces as input
+    # Your code goes here!
+    
+
+    
+for _ in range(int(input())):
+    # Runs for the number of tests
+    solve()
+
