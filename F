@@ -1,0 +1,111 @@
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+In this question requires you to know about modular inverse. Do read up on it as it is frequently used to speed up calculations and for output in some questions. 
+https://cp-algorithms.com/algebra/module-inverse.html
+^- This is CP Algorithms. Another great resource to learn about CP.
+TLDR we can use modinv in this manner:
+    (a/b)%p = (a%p)*modinv(b,p)
+    As long as p is coprime and bigger than b.
+
+    1 . In C++: This is a useful cpp template for modular operations.
+
+        struct Mod {
+        	ll x;
+        	Mod(ll xx) : x(xx) {}
+        	Mod operator+(Mod b) { return Mod((x + b.x) % mod); }
+        	Mod operator-(Mod b) { return Mod((x - b.x + mod) % mod); }
+        	Mod operator*(Mod b) { return Mod((x * b.x) % mod); }
+        	Mod operator/(Mod b) { return *this * invert(b); }
+        	Mod invert(Mod a) {
+        		ll x, y, g = euclid(a.x, mod, x, y);
+        		assert(g == 1); return Mod((x + mod) % mod);
+        	}
+        	Mod operator^(ll e) {
+        		if (!e) return Mod(1);
+        		Mod r = *this ^ (e / 2); r = r * r;
+        		return e&1 ? *this * r : r;
+        	}
+        };
+    Implements both Binary Exponentiation(see below) and Modular Inverse
+
+    2. In Python:
+
+        In Python modinv(b,p) can be calculated by using the inbuilt pow() function
+
+            modinv(b,p) = pow(b,-1,p)
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Another concept required in this question is Binary Exponetiation. Read up on it too.
+CP Algorithms Binary Expo: https://cp-algorithms.com/algebra/binary-exp.html
+
+TLDR: Using binary exponentiation we can calculate (a^n)%p in O(log(n))
+
+    1. In C++: Use the ^ operator in the MOD struct.
+
+    2. In Python: The inbuilt pow() funtion uses binary exponentiation automatically whenever the power is integer.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Now that we have the groundwork down, we can get to F!
+p = 1000000007
+Firstly let us observe the case when a = 12351 and k = 3.
+so the complete plate looks like: {^ marks are digits which make the number divisible by 5 if they are the last digit, ie 0 and 5.}
+k =    1    2     3
+    12351 12351 12351
+       ^     ^     ^
+So we only need to evaluate the number of final states where we have one of the  ^ marks as the last digit. For this every digit to the right of the chosen ^ 
+    has to be removed. And further we can remove any number of digits to the left of the chosen ^ digit.
+
+so if we observe:
+ 
+k =    1    2     3    ....  k-1          k 
+    12351 12351 12351 ..... 12351       12351
+                                           ^(observing this 5 currently) {let this digit be the xth digit of a(so index of this digit is x)}
+                                                                         {let the length of a = n} 
+                                                      
+    The number of cases where this 5 can be the last digit of the final number{k} is pow(2,x+(k-1)*n)   {pow(a,b) = a raised to power b}
+    Similar the same digit picked from (k-1) will give => pow(2,x+(k-2)*n) cases
+    Similar the same digit picked from (k-2) will give => pow(2,x+(k-3)*n) cases
+    And so on..
+
+    The sum of all the k for this digit is pow(2,x)*(pow(2,0*n)+ pow(2,1*n) + pow(2,2*n) +... pow(2,(k-1)*n)) {This is a GP of k terms}
+                                            = pow(2,x)* ((pow(2,n*k) -1)/(pow(2,n)-1)) {called Q}
+                                            = pow(2,x) * Q
+
+    
+    Now Q is independent of x, and so doesn't depend on the index of the digit being considered. This means we need to calculate it just once.
+    
+    We need to use both the tricks learnt above to calculate Q modulo p, represented as Q % p.
+        
+        Q % p = [pow(2,n*k,p) -1] * modinv{pow(2,n,p)-1,p}] % p  {modinv(a,b) is modinv of a about b => pow(a,-1,b)}
+
+    Now we iterate over a, and add pow(2,x)*Q for all x, where x is either a 0 or 5.
+
+Complexity: O(n)       { As all the precomputation is log(n) but done only once, and we are iterating over a}
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+from sys import stdin,stdout
+input=lambda :stdin.readline()[:-1]
+
+def solve():
+    mod = 1000000007
+    a = list(map(int,list(str(input()))))
+    k = int(input())
+    n = len(a)
+    x = (pow(2,n*k,mod)-1)
+    x = x*pow(pow(2,n,mod)-1,-1,mod)
+    x%=mod
+    ans = 0
+    for i in range(n):
+        if(a[n-i-1]%5==0):
+            t = pow(2,n-i-1,mod)
+            t*=x
+            t%=mod
+            ans+=t
+            ans%=mod
+    print(ans)
+        
+for _ in range(int((1))):
+    solve()
+
