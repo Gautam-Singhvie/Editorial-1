@@ -1,0 +1,30 @@
+In this question, it is mentioned we have an array of length n, of distict integers. This is called a permutation of length n. {Eg. n=6 => [6,2,1,3,4,5]},
+    and we wish to find the maximum money we can have at any time. 
+Here we are only picking every lth and rth numbers, so we can selectively set these numbers and the rest are inconsequential.
+So we are picking (n//l) {called x} numbers to add and (n//r) {called y} numbers to subtract money. {a//b is floor division of a by b} 
+Now we will be also be picking (n//lcm(l,r)){called z} numbers twice, and so they would have no net effect on our maximum.
+Note: z<=min(x,y)
+Then we have (x-z) numbers being added, so we pick the (x-z) maximum numbers to be added {which are n-(x-z-1), n-(x-z-2), ......, n-1, n}.
+Then we have (y-z) numbers being subtracted, so we pick the (y-z) minimum numbers to be subtracted {which are 1, 2, ......, y-z-1, y-z}.
+Calculating from the above numbers gives us the answer.
+
+Complexity: O(log(x*y)) {The entire solution is O(1) except the lcm funtion which uses the extended eucledian algorithm, whose complexity is log(x)+log(y).}
+
+from sys import stdin,stdout
+input=lambda :stdin.readline()[:-1]
+from math import lcm
+
+def solve():
+    n,l,r = map(int,(input().split())) 
+    x= n//l
+    y= n//r
+    t = lcm(l,r)
+    z = n//t
+    x-=z;y-=z
+    ans = x*n - ((x-1)*(x))//2
+    ans -= (y*(y+1))//2
+    print(ans)
+
+for _ in range(int(input())):
+    solve()
+
