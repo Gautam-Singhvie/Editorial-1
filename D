@@ -1,0 +1,36 @@
+In this question we have been given n points. For each point, we can draw the lines on which we will be looking for other points.
+The slope of these lines would be either 0, 1, inf or -1.
+So as we have a maximum of 4n lines, we push any point on all 4 lines it lies on. 
+We will save the keys in this format :- tuple(slope, x-intercept). {Tuples because tuples are hashable in python, you can equivally do this with vector of pairs in c++.}
+Once we have pushed all points in the map we can just add number of pairs on a line to the answer.
+
+Complexity: O(n) {as we are calculating at max a constant number of times for each point}
+
+
+
+from sys import stdin
+input=lambda :stdin.readline()[:-1]
+from collections import defaultdict
+from math import inf
+
+def solve():
+    n = int(input())
+    d = defaultdict(list)
+    all_m = set([-1,0,1,inf])
+
+    for i in range(n):
+        x,y = map(int,(input().split()))   
+        for m in all_m:
+            if(m!=inf):
+                d[tuple([m,y-m*x])].append(i)
+            else:
+                d[tuple([m,x])].append(i)
+    ans = 0
+    for i in d.keys():
+        t= len(d[i])
+        ans+=(t*(t-1))
+    print(ans)
+        
+for _ in range(int(input())):
+    solve()
+
